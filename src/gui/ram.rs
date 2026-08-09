@@ -51,6 +51,8 @@ pub fn draw_ram_table(ui: &mut egui::Ui, cpu: &DneprCPU) {
                                     0x05 => "OP: JZ",
                                     0x06 => "OP: MULT",
                                     0x07 => "OP: JPS",
+                                    0x08 => "OP: SHL",
+                                    0x09 => "OP: SHR",
                                     0x10 => "OP: SEL_CH",
                                     0x11 => "OP: READ_ADC",
                                     0x12 => "OP: WRITE_DAC",

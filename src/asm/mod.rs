@@ -61,6 +61,9 @@ impl Assembler {
                 "JPS"       => Self::encode_r2(0x07, &tokens, 1, 2, line_num, labels, defines)?,
                 "WRITE_DAC" => Self::encode_r2(0x12, &tokens, 1, 2, line_num, labels, defines)?,
 
+                "SHL" => Self::encode_r2(0x08, &tokens, 1, 2, line_num, labels, defines)?,
+                "SHR" => Self::encode_r2(0x09, &tokens, 1, 2, line_num, labels, defines)?,
+
                 _ => return Err(AsmError::UnknownOpcode(format!(
                     "Строка {}: Неизвестная команда '{}'", line_num + 1, mnemonic
                 ))),

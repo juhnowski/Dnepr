@@ -62,4 +62,22 @@ impl DneprWord {
         let shifted = (val1 * val2) >> 25;
         DneprWord((shifted as u32) & WORD_MASK)
     }
+
+    /// Знаковый сдвиг влево на n бит (с сохранением знакового разряда)
+    pub fn shl(self, n: u32) -> Self {
+        let val = self.sign_extend();
+        // В Rust сдвиг знакового i32 влево сохраняет знак, если нет переполнения,
+        // но для надежности разрядной сетки Днепра маскируем результат
+        let shifted = (val << n) as u32;
+        DneprWord(shifted & WORD_MASK)
+    }
+
+    /// Знаковый (арифметический) сдвиг вправо на n бит (с копированием знакового бита)
+    pub fn shr(self, n: u32) -> Self {
+        let val = self.sign_extend();
+        // Арифметический сдвиг вправо в Rust для i32 копирует знаковый бит автоматически
+        let shifted = (val >> n) as u32;
+        DneprWord(shifted & WORD_MASK)
+    }
+
 }

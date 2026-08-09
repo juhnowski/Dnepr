@@ -8,6 +8,8 @@ impl DneprCPU {
         let op_cycles = match opcode {
             0x00 => 1, 0x01 => 2, 0x02 => 2, 0x03 => 2,
             0x04 => 1, 0x05 => 1, 0x06 => 6, 0x07 => 1,
+            0x08 => 2,
+            0x09 => 2,
             0x10 => 1, 0x11 => 4, 0x12 => 3, _ => 1,
         };
 
@@ -90,6 +92,28 @@ impl DneprCPU {
                     }
                 } else {
                     self.log_message(format!("[Ошибка] JPS: Неверный номер тумблера П{}", addr1));
+                }
+            }
+            0x08 => { // SHL: Сдвиг знакового числа из [addr1] влево на addr2 бит -> ACC
+                if addr1 < MEMORY_SIZE {
+                    let w = DneprWord(self.memory[addr1]);
+                    let res = w.shl(addr2 as u32);
+                    self.accumulator = res.0;
+                    self.log_message(format!(
+                        "[ЦП] SHL: Выполнен сдвиг влево {:.4} на {} бит. Результат: {:.4}",
+                        w.to_float(), addr2, res.to_float()
+                    ));
+                }
+            }
+            0x09 => { // SHR: Арифметический сдвиг из [addr1] вправо на addr2 бит -> ACC
+                if addr1 < MEMORY_SIZE {
+                    let w = DneprWord(self.memory[addr1]);
+                    let res = w.shr(addr2 as u32);
+                    self.accumulator = res.0;
+                    self.log_message(format!(
+                        "[ЦП] SHR: Выполнен сдвиг вправо {:.4} на {} бит. Результат: {:.4}",
+                        w.to_float(), addr2, res.to_float()
+                    ));
                 }
             }
             0x10 => { // SEL_CH
