@@ -64,6 +64,8 @@ pub fn draw_control_panel(ui: &mut egui::Ui, cpu: &mut DneprCPU, input_switches:
                 cpu.cycles = 0;
                 cpu.is_running = false;
                 cpu.memory = [0; MEMORY_SIZE];
+                cpu.logs.clear(); // <-- Добавьте эту строку
+                cpu.logs.push("[Система] Состояние сброшено.".to_string()); // <-- Добавьте эту строку
             }
         });
     });
