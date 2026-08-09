@@ -85,12 +85,18 @@ fn run_console_mode(asm_path_str: &str) {
         Err(e) => { eprintln!("Критическая ошибка сценария: {}", e); return; }
     };
 
+    let compiled_result = match Assembler::compile(&asm_code) {
+        Ok(res) => res,
+        Err(e) => { eprintln!("Ошибка компиляции: {:?}", e); return; }
+    };
+
     let mut cpu = DneprCPU::new();
     cpu.uso.adc_inputs = [0.65; 8];
 
-    for (i, &instruction) in binary_program.iter().enumerate() {
+    for (i, &instruction) in compiled_result.binary.iter().enumerate() {
         if i < cpu::MEMORY_SIZE {
             cpu.memory[i] = instruction;
+            cpu.memory_is_code[i] = compiled_result.is_code[i];
         }
     }
 

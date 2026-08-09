@@ -38,30 +38,29 @@ pub fn draw_ram_table(ui: &mut egui::Ui, cpu: &DneprCPU) {
 
 
                         if is_current_pc {
-                            ui.colored_label(egui::Color32::LIGHT_BLUE, "⬅ NEXT OP");
+                            ui.colored_label(egui::Color32::LIGHT_BLUE, "⬅ СЛЕД_КОМ");
                         } else if val != 0 {
-                            // Проверяем по карте типов: код это или данные
                             if cpu.memory_is_code[addr] {
                                 let op = (val >> 20) & 0x3F;
                                 let mnemonic = match op {
-                                    0x01 => "OP: STORE",
-                                    0x02 => "OP: ADD",
-                                    0x03 => "OP: SUB",
-                                    0x04 => "OP: JUMP",
-                                    0x05 => "OP: JZ",
-                                    0x06 => "OP: MULT",
-                                    0x07 => "OP: JPS",
-                                    0x08 => "OP: SHL",
-                                    0x09 => "OP: SHR",
-                                    0x10 => "OP: SEL_CH",
-                                    0x11 => "OP: READ_ADC",
-                                    0x12 => "OP: WRITE_DAC",
-                                    _ => "OP: UNK",
+                                    0x00 => "КОМ: ОСТ",
+                                    0x01 => "КОМ: ЗП",
+                                    0x02 => "КОМ: СЛ",
+                                    0x03 => "КОМ: ВЫЧ",
+                                    0x04 => "КОМ: БП",
+                                    0x05 => "КОМ: ПЗ",
+                                    0x06 => "КОМ: УМН",
+                                    0x07 => "КОМ: ПК",
+                                    0x08 => "КОМ: СДЛ",
+                                    0x09 => "КОМ: СДП",
+                                    0x10 => "КОМ: ВК",
+                                    0x11 => "КОМ: ЧТ_АЦП",
+                                    0x12 => "КОМ: ЗП_ЦАП",
+                                    _ => "КОМ: ???",
                                 };
                                 ui.colored_label(egui::Color32::from_rgb(255, 180, 100), mnemonic);
                             } else {
-                                // Любой ручной ввод или директива DATA отображаются исключительно как данные!
-                                ui.colored_label(egui::Color32::GREEN, "DATA");
+                                ui.colored_label(egui::Color32::from_rgb(100, 255, 100), "ДАННЫЕ");
                             }
                         } else {
                             ui.label("");

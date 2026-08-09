@@ -18,13 +18,13 @@ impl DneprCPU {
         match opcode {
             0x00 => { // HALT
                 self.is_running = false;
-                self.log_message(format!("[ЦП] HALT: Выполнение остановлено (ячейка {})", self.program_counter - 1));
+                self.log_message(format!("[ЦП] ОСТ (Останов): Выполнение остановлено (ячейка {})", self.program_counter - 1));
             }
             0x01 => { // STORE
                 if addr1 < MEMORY_SIZE {
                     self.memory[addr1] = self.accumulator;
                     self.log_message(format!(
-                        "[ЦП] STORE: Значение {:#010X} ({:.4}) сохранено в ячейку {}",
+                        "[ЦП] ЗП (Запись): Значение {:#010X} ({:.4}) сохранено в ячейку {}",
                         self.accumulator, DneprWord(self.accumulator).to_float(), addr1
                     ));
                 }
@@ -35,7 +35,7 @@ impl DneprCPU {
                     let w2 = DneprWord(self.memory[addr2]);
                     let res = w1.add(w2);
                     self.accumulator = res.0;
-                    self.log_message(format!("[ЦП] ADD: {:.4} + {:.4} = {:.4}", w1.to_float(), w2.to_float(), res.to_float()));
+                    self.log_message(format!("[ЦП] СЛ (Сложение): {:.4} + {:.4} = {:.4}", w1.to_float(), w2.to_float(), res.to_float()));
                 }
             }
             0x03 => { // SUB
@@ -44,7 +44,7 @@ impl DneprCPU {
                     let w2 = DneprWord(self.memory[addr2]);
                     let res = w1.sub(w2);
                     self.accumulator = res.0;
-                    self.log_message(format!("[ЦП] SUB: {:.4} - {:.4} = {:.4}", w1.to_float(), w2.to_float(), res.to_float()));
+                    self.log_message(format!("[ЦП] ВЫЧ (Вычитание): {:.4} - {:.4} = {:.4}", w1.to_float(), w2.to_float(), res.to_float()));
                 }
             }
             0x04 => { // JUMP
@@ -69,7 +69,7 @@ impl DneprCPU {
                     let w2 = DneprWord(self.memory[addr2]);
                     let res = w1.multiply(w2);
                     self.accumulator = res.0;
-                    self.log_message(format!("[ЦП] MULT: {:.4} * {:.4} = {:.4}", w1.to_float(), w2.to_float(), res.to_float()));
+                    self.log_message(format!("[ЦП] УМН (Умножение): {:.4} * {:.4} = {:.4}", w1.to_float(), w2.to_float(), res.to_float()));
                 }
             }
             0x07 => { // JPS: Перейти на адрес addr2, если тумблер под номером addr1 включен
@@ -80,13 +80,13 @@ impl DneprCPU {
                             self.program_counter = addr2;
 
                             self.log_message(format!(
-                                "[ЦП] JPS: Тумблер П{} ВКЛЮЧЕН. Выполнен переход на адрес ячейки {}",
+                                "[ЦП] ПК (Переход по Ключу): Тумблер П{} ВКЛЮЧЕН. Выполнен переход на адрес ячейки {}",
                                 addr1, addr2
                             ));
                         }
                     } else {
                         self.log_message(format!(
-                            "[ЦП] JPS: Тумблер П{} ВЫКЛЮЧЕН. Переход на адрес {} пропущен.",
+                            "[ЦП] ПК (Переход по Ключу): Тумблер П{} ВЫКЛЮЧЕН. Переход на адрес {} пропущен.",
                             addr1, addr2
                         ));
                     }
@@ -100,7 +100,7 @@ impl DneprCPU {
                     let res = w.shl(addr2 as u32);
                     self.accumulator = res.0;
                     self.log_message(format!(
-                        "[ЦП] SHL: Выполнен сдвиг влево {:.4} на {} бит. Результат: {:.4}",
+                        "[ЦП] СДЛ (Сдвиг Влево): Выполнен сдвиг влево {:.4} на {} бит. Результат: {:.4}",
                         w.to_float(), addr2, res.to_float()
                     ));
                 }
@@ -111,7 +111,7 @@ impl DneprCPU {
                     let res = w.shr(addr2 as u32);
                     self.accumulator = res.0;
                     self.log_message(format!(
-                        "[ЦП] SHR: Выполнен сдвиг вправо {:.4} на {} бит. Результат: {:.4}",
+                        "[ЦП] СДП (Сдвиг Вправо): Выполнен сдвиг вправо {:.4} на {} бит. Результат: {:.4}",
                         w.to_float(), addr2, res.to_float()
                     ));
                 }

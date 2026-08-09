@@ -24,18 +24,18 @@ impl AsmParser {
             let tokens = Self::tokenize(line);
             if tokens.is_empty() { continue; }
 
-            if tokens[0].to_uppercase() == "DEFINE" {
+            if tokens[0].to_uppercase() == "ОПР" {
                 if tokens.len() < 3 {
                     return Err(AsmError::MissingArgument(format!(
-                        "Строка {}: Директива DEFINE требует имя и значение", line_num + 1
+                        "Строка {}: Директива ОПР требует имя и значение", line_num + 1
                     )));
                 }
                 let name = tokens[1].to_uppercase();
                 let val = tokens[2].parse::<u32>().map_err(|_| AsmError::InvalidArgument(format!(
-                    "Строка {}: Ошибка парсинга значения DEFINE '{}'", line_num + 1, tokens[2]
+                    "Строка {}: Ошибка парсинга значения ОПР '{}'", line_num + 1, tokens[2]
                 )))?;
                 defines.insert(name, val);
-                continue;
+                continue; // Директива ОПР не занимает места в памяти инструкций ЭВМ
             }
 
             let first_token = tokens[0];
@@ -48,10 +48,12 @@ impl AsmParser {
                 }
                 labels.insert(label_name, instruction_count);
 
+                // Если строка содержит метку И команду/директиву данных, она занимает ячейку
                 if tokens.len() > 1 { instruction_count += 1; }
             } else {
                 instruction_count += 1;
             }
+
         }
         Ok((labels, defines))
     }
