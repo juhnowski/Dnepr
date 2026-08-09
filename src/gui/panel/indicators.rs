@@ -39,12 +39,34 @@ pub fn draw_indicators_and_buttons(ui: &mut egui::Ui, cpu: &mut DneprCPU) {
             if ui.button("⏭️ ТАКТ-ШАГ").clicked() {
                 cpu.step();
             }
+
+            // --- НОВЫЕ АУТЕНТИЧНЫЕ КНОПКИ ПУЛЬТА «ДНЕПР» ---
+            if ui.button("💾 ЗАПИСЬ В ОЗУ").clicked() {
+                if cpu.program_counter < MEMORY_SIZE {
+                    cpu.memory[cpu.program_counter] = cpu.accumulator;
+                    cpu.log_message(format!(
+                        "[Пульт] Ручная запись: Значение {:#010X} записано в ячейку [{:03}]",
+                        cpu.accumulator, cpu.program_counter
+                    ));
+                }
+            }
+            if ui.button("📖 ЧТЕНИЕ ИЗ ОЗУ").clicked() {
+                if cpu.program_counter < MEMORY_SIZE {
+                    cpu.accumulator = cpu.memory[cpu.program_counter];
+                    cpu.log_message(format!(
+                        "[Пульт] Ручное чтение: Из ячейки [{:03}] считано значение {:#010X}",
+                        cpu.program_counter, cpu.accumulator
+                    ));
+                }
+            }
+
             if ui.button("🔄 СБРОС (ОЗУ+ЦП)").clicked() {
                 cpu.accumulator = 0;
                 cpu.program_counter = 0;
                 cpu.cycles = 0;
                 cpu.is_running = false;
                 cpu.memory = [0; MEMORY_SIZE];
+                cpu.program_switches = [false; 5];
                 cpu.logs.clear();
                 cpu.logs.push("[Система] Выполнен полный аппаратный сброс комплекса.".to_string());
             }
