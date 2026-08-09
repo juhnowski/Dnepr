@@ -82,8 +82,7 @@ pub fn draw_keyboard(ui: &mut egui::Ui, cpu: &mut DneprCPU, input_switches: &mut
                 egui::Grid::new("right_switches").num_columns(2).spacing([10.0, 8.0]).show(ui, |ui| {
                     for i in 0..5 {
                         ui.small(format!("Тумблер П{}:", i));
-                        let mut mock_flag = false;
-                        ui.checkbox(&mut mock_flag, "");
+                        ui.checkbox(&mut cpu.program_switches[i], "");
                         ui.end_row();
                     }
                 });

@@ -30,7 +30,7 @@ fn main() {
         let mut native_options = eframe::NativeOptions::default();
         native_options.viewport = egui::ViewportBuilder::default()
             .with_title("Пульт контроля и управления ЭВМ «Днепр»")
-            .with_inner_size(egui::vec2(1200.0, 800.0)) // Задаем ширину 1024 и высоту 600
+            .with_inner_size(egui::vec2(1800.0, 1000.0)) // Задаем ширину 1024 и высоту 600
             .with_min_inner_size(egui::vec2(800.0, 500.0)); // Ограничиваем минимальное сжатие окна
 
         if let Err(err) = eframe::run_native(
