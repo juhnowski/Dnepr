@@ -64,12 +64,14 @@ fn run_console_mode(asm_path_str: &str) {
         Err(e) => { eprintln!("Ошибка чтения ассемблера: {}", e); return; }
     };
 
-    let binary_program = match Assembler::compile(&asm_code) {
-        Ok(code) => code,
+    let compiled_result = match Assembler::compile(&asm_code) {
+        Ok(res) => res,
         Err(e) => { eprintln!("Ошибка компиляции: {:?}", e); return; }
     };
 
     let has_scenario: bool;
+    println!("--- Автоматический поиск файла сценария: {} ---", scenario_path.display());
+
     println!("--- Автоматический поиск файла сценария: {} ---", scenario_path.display());
     let scenario = match Scenario::load(&scenario_path) {
         Ok(Some(scen)) => {

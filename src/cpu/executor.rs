@@ -50,17 +50,17 @@ impl DneprCPU {
             0x04 => { // JUMP
                 if addr1 < MEMORY_SIZE {
                     self.program_counter = addr1;
-                    self.log_message(format!("[ЦП] JUMP на адрес {}", addr1));
+                    self.log_message(format!("[ЦП] БП (Безусловный переход) на адрес {}", addr1));
                 }
             }
             0x05 => { // JZ
                 if self.accumulator == 0 {
                     if addr1 < MEMORY_SIZE {
                         self.program_counter = addr1;
-                        self.log_message(format!("[ЦП] JZ на адрес {} выполнен (ACC = 0)", addr1));
+                        self.log_message(format!("[ЦП] ПЗ (Переход по нулю) на адрес {} выполнен (ACC = 0)", addr1));
                     }
                 } else {
-                    self.log_message(format!("[ЦП] JZ на адрес {} пропущен (ACC != 0)", addr1));
+                    self.log_message(format!("[ЦП] ПЗ (Переход по нулю) на адрес {} пропущен (ACC != 0)", addr1));
                 }
             }
             0x06 => { // MULT
@@ -126,14 +126,14 @@ impl DneprCPU {
                 let analog_val = self.uso.adc_inputs[self.uso.selected_channel];
                 let word = DneprWord::from_float(analog_val);
                 self.accumulator = word.0;
-                self.log_message(format!("[УСО] READ_ADC с канала {}: {:.4}", self.uso.selected_channel, analog_val));
+                self.log_message(format!("[УСО] ЧТ_АЦП (Чтение) с канала {}: {:.4}", self.uso.selected_channel, analog_val));
             }
             0x12 => { // WRITE_DAC
                 if addr1 < DAC_CHANNELS && addr2 < MEMORY_SIZE {
                     let word = DneprWord(self.memory[addr2]);
                     let analog_val = word.to_float();
                     self.uso.dac_outputs[addr1] = analog_val;
-                    self.log_message(format!("[УСО] WRITE_DAC на канал {}: {:.4}", addr1, analog_val));
+                    self.log_message(format!("[УСО] ЗП_ЦАП (Запись) на канал {}: {:.4}", addr1, analog_val));
                 }
             }
             _ => {
