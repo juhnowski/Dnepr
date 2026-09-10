@@ -1,15 +1,16 @@
+// C:\Users\User\Dnepr\src\main.rs
+mod asm;
+mod cpu;
+mod gui;
+mod scenario;
 mod types;
 mod uso;
-mod cpu;
-mod asm;
-mod scenario;
-mod gui;
 
-use cpu::DneprCPU;
 use asm::Assembler;
-use scenario::Scenario;
-use gui::DneprGuiApp;
+use cpu::DneprCPU;
 use eframe::egui;
+use gui::DneprGuiApp;
+use scenario::Scenario;
 use std::env;
 use std::fs;
 use std::path::Path;
@@ -28,10 +29,15 @@ fn main() {
 
         // Настраиваем параметры отображения окна и размеры вьюпорта
         let mut native_options = eframe::NativeOptions::default();
+
+        // Включаем следование за темой
+        native_options.follow_system_theme = true;
+        native_options.default_theme = eframe::Theme::Dark; // Тема по умолчанию, если ОС не ответит
+
         native_options.viewport = egui::ViewportBuilder::default()
             .with_title("Пульт контроля и управления ЭВМ «Днепр»")
-            .with_inner_size(egui::vec2(1800.0, 1000.0)) // Задаем ширину 1024 и высоту 600
-            .with_min_inner_size(egui::vec2(800.0, 500.0)); // Ограничиваем минимальное сжатие окна
+            .with_inner_size(egui::vec2(1600.0, 1000.0)) // Задаем ширину 1024 и высоту 600
+            .with_min_inner_size(egui::vec2(1400.0, 900.0)); // Ограничиваем минимальное сжатие окна
 
         if let Err(err) = eframe::run_native(
             "Пульт контроля и управления ЭВМ «Днепр»",
@@ -58,21 +64,36 @@ fn run_console_mode(asm_path_str: &str) {
     let asm_path = Path::new(asm_path_str);
     let scenario_path = asm_path.with_extension("sco");
 
-    println!("--- Чтение файла исходного кода: {} ---", asm_path.display());
+    println!(
+        "--- Чтение файла исходного кода: {} ---",
+        asm_path.display()
+    );
     let asm_code = match fs::read_to_string(asm_path) {
         Ok(code) => code,
-        Err(e) => { eprintln!("Ошибка чтения ассемблера: {}", e); return; }
+        Err(e) => {
+            eprintln!("Ошибка чтения ассемблера: {}", e);
+            return;
+        }
     };
 
     let compiled_result = match Assembler::compile(&asm_code) {
         Ok(res) => res,
-        Err(e) => { eprintln!("Ошибка компиляции: {:?}", e); return; }
+        Err(e) => {
+            eprintln!("Ошибка компиляции: {:?}", e);
+            return;
+        }
     };
 
     let has_scenario: bool;
-    println!("--- Автоматический поиск файла сценария: {} ---", scenario_path.display());
+    println!(
+        "--- Автоматический поиск файла сценария: {} ---",
+        scenario_path.display()
+    );
 
-    println!("--- Автоматический поиск файла сценария: {} ---", scenario_path.display());
+    println!(
+        "--- Автоматический поиск файла сценария: {} ---",
+        scenario_path.display()
+    );
     let scenario = match Scenario::load(&scenario_path) {
         Ok(Some(scen)) => {
             has_scenario = true;
@@ -84,12 +105,18 @@ fn run_console_mode(asm_path_str: &str) {
             println!("[Режим внешней среды]: Файл .sco отсутствует. Симуляция без сценария.");
             Scenario::default()
         }
-        Err(e) => { eprintln!("Критическая ошибка сценария: {}", e); return; }
+        Err(e) => {
+            eprintln!("Критическая ошибка сценария: {}", e);
+            return;
+        }
     };
 
     let compiled_result = match Assembler::compile(&asm_code) {
         Ok(res) => res,
-        Err(e) => { eprintln!("Ошибка компиляции: {:?}", e); return; }
+        Err(e) => {
+            eprintln!("Ошибка компиляции: {:?}", e);
+            return;
+        }
     };
 
     let mut cpu = DneprCPU::new();

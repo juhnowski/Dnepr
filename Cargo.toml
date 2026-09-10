@@ -6,3 +6,6 @@ edition = "2024"
 [dependencies]
 eframe = "0.28"
 rfd = "0.14"
+
+[build-dependencies]
+embed-resource = "2.5"
